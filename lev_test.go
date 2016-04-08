@@ -126,6 +126,11 @@ func Test_Metrics(t *testing.T) {
 
 			// When setting a maxCost (should not affect Similarity() and Match())...
 			{"password", "pass1", "(maxCost=1)", NewParams().MaxCost(1), e{2, 4, 0, 4. / 8, 4. / 8}},
+			{"pass1word", "passwords1", "(maxCost=2)", NewParams().MaxCost(2), e{3, 4, 0, 7. / 10, 8.2 / 10}},
+			{"password", "1234", " (D=2,maxCost=1)", NewParams().DelCost(2).MaxCost(1), e{2, 0, 0, 0, 0}},
+			{"pwd", "password", " (I=0,maxCost=0)", NewParams().InsCost(0).MaxCost(0), e{0, 1, 1, 1, 1}},
+			{"passXword", "password", "(maxCost=10)", NewParams().MaxCost(10), e{1, 4, 4, 8. / 9, 8.4 / 9}},
+			{"passXord", "password", "(S=3,maxCost=17)", NewParams().SubCost(3).MaxCost(17), e{2, 4, 3, 14. / 16, 14.8 / 16}},
 			// ... no change because the Calculate is calculated without getting into the main algorithm:
 			{"password", "pass", "(maxCost=1)", NewParams().MaxCost(1), e{4, 4, 0, 4. / 8, 4. / 8}},
 

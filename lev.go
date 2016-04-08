@@ -35,9 +35,6 @@ package lev
 // to be greater than maxCost. Therefore, any return value higher than maxCost is a
 // lower bound for the actual distance.
 func Calculate(str1, str2 []rune, maxCost, insCost, subCost, delCost int) (dist, prefixLen, suffixLen int) {
-	// ToDo: This is O(l1*l2) time and O(min(l1,l2)) space; investigate if it is
-	// worth to implement diagonal approach - O(l1*(1+dist)) time, up to O(l1*l2) space
-	// http://www.csse.monash.edu.au/~lloyd/tildeStrings/Alignment/92.IPL.html
 	l1, l2 := len(str1), len(str2)
 	// trim common prefix, if any, as it doesn't affect the distance
 	for ; prefixLen < l1 && prefixLen < l2; prefixLen++ {
@@ -74,51 +71,84 @@ func Calculate(str1, str2 []rune, maxCost, insCost, subCost, delCost int) (dist,
 	if l1 > l2 {
 		str1, str2, l1, l2, insCost, delCost = str2, str1, l2, l1, delCost, insCost
 	}
-
 	d := make([]int, l1+1)
-	for y := 1; y <= l1; y++ {
-		d[y] = y * delCost
+
+	// variables used in inner "for" loops
+	var y, dy, c, l int
+
+	// if maxCost is higher than the maximum possible distance, it's equivalent to 'unlimited'
+	if maxCost > 0 {
+		if subCost < delCost+insCost {
+			if maxCost > l1*subCost+(l2-l1)*insCost {
+				maxCost = 0
+			}
+		} else {
+			if maxCost > l1*delCost+l2*insCost {
+				maxCost = 0
+			}
+		}
 	}
 
 	if maxCost > 0 {
-		overMax := true
-		for x := 1; x <= l2; x++ {
-			d[0] = x * insCost
-			overMax = true
-			for y, minCost := 1, (x-1)*insCost; y <= l1; y++ {
-				if str1[y-1] != str2[x-1] {
-					minCost += subCost
-				}
-				if cd := d[y-1] + delCost; cd < minCost {
-					minCost = cd
-				}
-				if ci := d[y] + insCost; ci < minCost {
-					minCost = ci
-				}
-				if minCost <= maxCost {
-					overMax = false
-				}
-				minCost, d[y] = d[y], minCost
+		// offset and length of d in the current row
+		do, dl := 0, 1
+		for y, dy = 1, delCost; y <= l1 && dy <= maxCost; dl++ {
+			d[y] = dy
+			y++
+			dy = y * delCost
+		}
+
+		for x := 0; x < l2; x++ {
+			dy, d[do] = d[do], d[do]+insCost
+			if l = do + dl; l > l1 {
+				l = l1
 			}
-			if overMax {
+			for y = do; y < l; dy, d[y] = d[y], dy {
+				if str1[y] != str2[x] {
+					dy += subCost
+				}
+				if c = d[y] + delCost; c < dy {
+					dy = c
+				}
+				y++
+				if c = d[y] + insCost; c < dy {
+					dy = c
+				}
+				if dy > maxCost {
+					dl = y - do
+					break
+				}
+			}
+			for d[do] > maxCost {
+				do++
+				dl--
+			}
+			if dl == 0 {
 				dist = maxCost + 1
 				return
 			}
 		}
 	} else {
-		for x := 1; x <= l2; x++ {
-			d[0] = x * insCost
-			for y, minCost := 1, (x-1)*insCost; y <= l1; y++ {
-				if str1[y-1] != str2[x-1] {
-					minCost += subCost
+		// ToDo: This is O(l1*l2) time and O(min(l1,l2)) space; investigate if it is
+		// worth to implement diagonal approach - O(l1*(1+dist)) time, up to O(l1*l2) space
+		// http://www.csse.monash.edu.au/~lloyd/tildeStrings/Alignment/92.IPL.html
+
+		for y = 1; y <= l1; y++ {
+			d[y] = y * delCost
+		}
+		for x := 0; x < l2; x++ {
+			dy, d[0] = d[0], d[0]+insCost
+			for y = 0; y < l1; dy, d[y] = d[y], dy {
+				if str1[y] != str2[x] {
+					dy += subCost
 				}
-				if cd := d[y-1] + delCost; cd < minCost {
-					minCost = cd
+				if c = d[y] + delCost; c < dy {
+					dy = c
 				}
-				if ci := d[y] + insCost; ci < minCost {
-					minCost = ci
+				y++
+				if c = d[y] + insCost; c < dy {
+					dy = c
 				}
-				minCost, d[y] = d[y], minCost
 			}
 		}
 	}
