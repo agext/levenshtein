@@ -4,13 +4,13 @@ This package implements distance and similarity metrics for strings, based on th
 
 ## Maturity
 
-[![Build Status](https://travis-ci.org/agext/lev.svg?branch=master)](https://travis-ci.org/agext/lev)
+[![Build Status](https://travis-ci.org/agext/levenshtein.svg?branch=master)](https://travis-ci.org/agext/levenshtein)
 
 v1.1 Stable: Guaranteed no breaking changes to the API in future v1.x releases. No known bugs or performance issues. Probably safe to use in production, though provided on "AS IS" basis.
 
 ## Overview
 
-[![GoDoc](https://godoc.org/github.com/agext/lev?status.png)](https://godoc.org/github.com/agext/lev)
+[![GoDoc](https://godoc.org/github.com/agext/levenshtein?status.png)](https://godoc.org/github.com/agext/levenshtein)
 
 The Levenshtein `Distance` between two strings is the minimum total cost of edits that would convert the first string into the second. The allowed edit operations are insertions, deletions, and substitutions, all at character (one UTF-8 code point) level. Each operation has a default cost of 1, but each can be assigned its own cost equal to or greater than 0.
 
@@ -25,9 +25,9 @@ The underlying `Calculate` function is also exported, to allow the building of o
 ## Installation
 
 ```
-go get github.com/agext/lev
+go get github.com/agext/levenshtein
 ```
 
 ## License
 
-Package lev is released under the Apache 2.0 license. See the [LICENSE](LICENSE) file for details.
+Package levenshtein is released under the Apache 2.0 license. See the [LICENSE](LICENSE) file for details.

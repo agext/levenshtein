@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package lev
+package levenshtein
 
 // Params represents a set of parameter values for the various formulas involved
 // in the calculation of the Levenshtein string metrics.

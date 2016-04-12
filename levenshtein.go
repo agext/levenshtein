@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /*
-Package lev implements distance and similarity metrics for strings, based on the Levenshtein measure.
+Package levenshtein implements distance and similarity metrics for strings, based on the Levenshtein measure.
 
 The Levenshtein `Distance` between two strings is the minimum total cost of edits that would convert the first string into the second. The allowed edit operations are insertions, deletions, and substitutions, all at character (one UTF-8 code point) level. Each operation has a default cost of 1, but each can be assigned its own cost equal to or greater than 0.
 
@@ -25,7 +25,7 @@ The `Match` function provides a similarity metric, with the same range and meani
 
 The underlying `Calculate` function is also exported, to allow the building of other derivative metrics, if needed.
 */
-package lev
+package levenshtein
 
 // Calculate determines the Levenshtein distance between two strings, using
 // the given costs for each edit operation. It returns the distance along with
