@@ -6,7 +6,7 @@ This package implements distance and similarity metrics for strings, based on th
 
 [![Build Status](https://travis-ci.org/agext/levenshtein.svg?branch=master)](https://travis-ci.org/agext/levenshtein)
 
-v1.1 Stable: Guaranteed no breaking changes to the API in future v1.x releases. No known bugs or performance issues. Probably safe to use in production, though provided on "AS IS" basis.
+v1.2 Stable: Guaranteed no breaking changes to the API in future v1.x releases. No known bugs or performance issues. Probably safe to use in production, though provided on "AS IS" basis.
 
 ## Overview
 

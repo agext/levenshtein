@@ -66,44 +66,60 @@ func Calculate(str1, str2 []rune, maxCost, insCost, subCost, delCost int) (dist,
 		return
 	}
 
-	// prefer the shorter string first, to minimize space;
-	// a swap also transposes the meanings of insertion and deletion.
-	if l1 > l2 {
-		str1, str2, l1, l2, insCost, delCost = str2, str1, l2, l1, delCost, insCost
-	}
-	d := make([]int, l1+1)
-
 	// variables used in inner "for" loops
 	var y, dy, c, l int
 
-	// if maxCost is higher than the maximum possible distance, it's equivalent to 'unlimited'
+	// if maxCost is greater than or equal to the maximum possible distance, it's equivalent to 'unlimited'
 	if maxCost > 0 {
 		if subCost < delCost+insCost {
-			if maxCost > l1*subCost+(l2-l1)*insCost {
+			if maxCost >= l1*subCost+(l2-l1)*insCost {
 				maxCost = 0
 			}
 		} else {
-			if maxCost > l1*delCost+l2*insCost {
+			if maxCost >= l1*delCost+l2*insCost {
 				maxCost = 0
 			}
 		}
 	}
 
 	if maxCost > 0 {
+		// prefer the longer string first, to minimize time;
+		// a swap also transposes the meanings of insertion and deletion.
+		if l1 < l2 {
+			str1, str2, l1, l2, insCost, delCost = str2, str1, l2, l1, delCost, insCost
+		}
+
+		// the length differential times cost of deletion is a lower bound for the cost;
+		// if it is higher than the maxCost, there is no point going into the main calculation.
+		if dist = (l1 - l2) * delCost; dist > maxCost {
+			return
+		}
+
+		d := make([]int, l1+1)
+
 		// offset and length of d in the current row
-		do, dl := 0, 1
-		for y, dy = 1, delCost; y <= l1 && dy <= maxCost; dl++ {
+		doff, dlen := 0, 1
+		for y, dy = 1, delCost; y <= l1 && dy <= maxCost; dlen++ {
 			d[y] = dy
 			y++
 			dy = y * delCost
 		}
+		// fmt.Printf("%q -> %q: init doff=%d dlen=%d d[%d:%d]=%v\n", str1, str2, doff, dlen, doff, doff+dlen, d[doff:doff+dlen])
 
 		for x := 0; x < l2; x++ {
-			dy, d[do] = d[do], d[do]+insCost
-			if l = do + dl; l > l1 {
-				l = l1
+			dy, d[doff] = d[doff], d[doff]+insCost
+			for d[doff] > maxCost && dlen > 0 {
+				if str1[doff] != str2[x] {
+					dy += subCost
+				}
+				doff++
+				dlen--
+				if c = d[doff] + insCost; c < dy {
+					dy = c
+				}
+				dy, d[doff] = d[doff], dy
 			}
-			for y = do; y < l; dy, d[y] = d[y], dy {
+			for y, l = doff, doff+dlen-1; y < l; dy, d[y] = d[y], dy {
 				if str1[y] != str2[x] {
 					dy += subCost
 				}
@@ -114,24 +130,41 @@ func Calculate(str1, str2 []rune, maxCost, insCost, subCost, delCost int) (dist,
 				if c = d[y] + insCost; c < dy {
 					dy = c
 				}
-				if dy > maxCost {
-					dl = y - do
-					break
+			}
+			if y < l1 {
+				if str1[y] != str2[x] {
+					dy += subCost
+				}
+				if c = d[y] + delCost; c < dy {
+					dy = c
+				}
+				for ; dy <= maxCost && y < l1; dy, d[y] = dy+delCost, dy {
+					y++
+					dlen++
 				}
 			}
-			for d[do] > maxCost {
-				do++
-				dl--
-			}
-			if dl == 0 {
+			// fmt.Printf("%q -> %q: x=%d doff=%d dlen=%d d[%d:%d]=%v\n", str1, str2, x, doff, dlen, doff, doff+dlen, d[doff:doff+dlen])
+			if dlen == 0 {
 				dist = maxCost + 1
 				return
 			}
 		}
+		if doff+dlen-1 < l1 {
+			dist = maxCost + 1
+			return
+		}
+		dist = d[l1]
 	} else {
 		// ToDo: This is O(l1*l2) time and O(min(l1,l2)) space; investigate if it is
 		// worth to implement diagonal approach - O(l1*(1+dist)) time, up to O(l1*l2) space
 		// http://www.csse.monash.edu.au/~lloyd/tildeStrings/Alignment/92.IPL.html
+
+		// prefer the shorter string first, to minimize space; time is O(l1*l2) anyway;
+		// a swap also transposes the meanings of insertion and deletion.
+		if l1 > l2 {
+			str1, str2, l1, l2, insCost, delCost = str2, str1, l2, l1, delCost, insCost
+		}
+		d := make([]int, l1+1)
 
 		for y = 1; y <= l1; y++ {
 			d[y] = y * delCost
@@ -151,9 +184,9 @@ func Calculate(str1, str2 []rune, maxCost, insCost, subCost, delCost int) (dist,
 				}
 			}
 		}
+		dist = d[l1]
 	}
 
-	dist = d[l1]
 	return
 }
 

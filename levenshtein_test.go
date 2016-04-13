@@ -125,14 +125,16 @@ func Test_Metrics(t *testing.T) {
 			{"passwor", "password", " (D=2)", NewParams().DelCost(2), e{1, 7, 0, 7.0 / 8, 7.4 / 8}},
 
 			// When setting a maxCost (should not affect Similarity() and Match())...
-			{"password", "pass1", "(maxCost=1)", NewParams().MaxCost(1), e{2, 4, 0, 4. / 8, 4. / 8}},
+			{"password", "1password2", "(maxCost=6)", NewParams().MaxCost(6), e{2, 0, 0, 8. / 10, 8. / 10}},
+			{"password", "pass1234", "(maxCost=1)", NewParams().MaxCost(1), e{2, 4, 0, 4. / 8, 4. / 8}},
 			{"pass1word", "passwords1", "(maxCost=2)", NewParams().MaxCost(2), e{3, 4, 0, 7. / 10, 8.2 / 10}},
-			{"password", "1234", " (D=2,maxCost=1)", NewParams().DelCost(2).MaxCost(1), e{2, 0, 0, 0, 0}},
+			{"password", "1passwo", " (D=2,maxCost=1)", NewParams().DelCost(2).MaxCost(1), e{2, 0, 0, 4. / 9, 4. / 9}},
 			{"pwd", "password", " (I=0,maxCost=0)", NewParams().InsCost(0).MaxCost(0), e{0, 1, 1, 1, 1}},
 			{"passXword", "password", "(maxCost=10)", NewParams().MaxCost(10), e{1, 4, 4, 8. / 9, 8.4 / 9}},
 			{"passXord", "password", "(S=3,maxCost=17)", NewParams().SubCost(3).MaxCost(17), e{2, 4, 3, 14. / 16, 14.8 / 16}},
 			// ... no change because the Calculate is calculated without getting into the main algorithm:
 			{"password", "pass", "(maxCost=1)", NewParams().MaxCost(1), e{4, 4, 0, 4. / 8, 4. / 8}},
+			{"password", "1234", " (D=2,maxCost=1)", NewParams().DelCost(2).MaxCost(1), e{8, 0, 0, 0, 0}},
 
 			// When setting a minScore (should not affect Calculate() and Distance())...
 			{"password", "pass1", "(minScore=0.3)", NewParams().MinScore(.3), e{4, 4, 0, 4. / 8, 4. / 8}},
