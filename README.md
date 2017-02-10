@@ -8,6 +8,8 @@ This package implements distance and similarity metrics for strings, based on th
 
 v1.2 Stable: Guaranteed no breaking changes to the API in future v1.x releases. No known bugs or performance issues. Probably safe to use in production, though provided on "AS IS" basis.
 
+This package is being actively maintained. If you encounter any problems or have any suggestions for improvement, please [open an issue](https://github.com/agext/levenshtein/issues). Pull requests are welcome.
+
 ## Overview
 
 [![GoDoc](https://godoc.org/github.com/agext/levenshtein?status.png)](https://godoc.org/github.com/agext/levenshtein)
