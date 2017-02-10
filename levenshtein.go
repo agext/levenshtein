@@ -236,6 +236,11 @@ func Match(str1, str2 string, p *Params) float64 {
 		p = defaultParams
 	}
 
+	// a min over 1 can never be satisfied, so the score is 0.
+	if p.minScore > 1 {
+		return 0
+	}
+
 	insCost, delCost, maxDist, max := p.insCost, p.delCost, 0, 0
 	if l1 > l2 {
 		l1, l2, insCost, delCost = l2, l1, delCost, insCost
@@ -249,11 +254,6 @@ func Match(str1, str2 string, p *Params) float64 {
 
 	// a zero min is always satisfied, so no need to set a max cost.
 	if p.minScore > 0 {
-		// a min over 1 can never be satisfied, so the score is 0.
-		if p.minScore > 1 {
-			return 0
-		}
-
 		// if p.minScore is lower than p.bonusThreshold, we can use a simplified formula
 		// for the max cost, because a sim score below min cannot receive a bonus.
 		if p.minScore < p.bonusThreshold {
