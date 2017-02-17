@@ -1,18 +1,19 @@
 language: go
-
+sudo: false
 go:
+  - 1.8
   - 1.7.5
   - 1.7.4
   - 1.7.3
   - 1.7.2
   - 1.7.1
   - 1.7
+  - tip
   - 1.6.4
   - 1.6.3
   - 1.6.2
   - 1.6.1
   - 1.6
-  - tip
   - 1.5.4
   - 1.5.3
   - 1.5.2
@@ -32,15 +33,22 @@ go:
   - 1.1.2
   - 1.1.1
   - 1.1
-  - 1.0.3
-  - 1.0.2
-  - 1.0.1
-  - 1
-
+before_install:
+  - go get github.com/mattn/goveralls
+script:
+  - $HOME/gopath/bin/goveralls -service=travis-ci
+notifications:
+  email:
+    on_success: never
 matrix:
   fast_finish: true
   allow_failures:
     - go: tip
+    - go: 1.6.4
+    - go: 1.6.3
+    - go: 1.6.2
+    - go: 1.6.1
+    - go: 1.6
     - go: 1.5.4
     - go: 1.5.3
     - go: 1.5.2
@@ -60,7 +68,3 @@ matrix:
     - go: 1.1.2
     - go: 1.1.1
     - go: 1.1
-    - go: 1.0.3
-    - go: 1.0.2
-    - go: 1.0.1
-    - go: 1

@@ -47,79 +47,79 @@ func NewParams() *Params {
 
 // Clone returns a pointer to a copy of the receiver parameter set, or of a new
 // default parameter set if the receiver is nil.
-func (this *Params) Clone() *Params {
-	if this == nil {
+func (p *Params) Clone() *Params {
+	if p == nil {
 		return NewParams()
 	}
 	return &Params{
-		insCost:        this.insCost,
-		subCost:        this.subCost,
-		delCost:        this.delCost,
-		maxCost:        this.maxCost,
-		minScore:       this.minScore,
-		bonusPrefix:    this.bonusPrefix,
-		bonusScale:     this.bonusScale,
-		bonusThreshold: this.bonusThreshold,
+		insCost:        p.insCost,
+		subCost:        p.subCost,
+		delCost:        p.delCost,
+		maxCost:        p.maxCost,
+		minScore:       p.minScore,
+		bonusPrefix:    p.bonusPrefix,
+		bonusScale:     p.bonusScale,
+		bonusThreshold: p.bonusThreshold,
 	}
 }
 
 // InsCost overrides the default value of 1 for the cost of insertion.
 // The new value must be zero or positive.
-func (this *Params) InsCost(v int) *Params {
+func (p *Params) InsCost(v int) *Params {
 	if v >= 0 {
-		this.insCost = v
+		p.insCost = v
 	}
-	return this
+	return p
 }
 
 // SubCost overrides the default value of 1 for the cost of substitution.
 // The new value must be zero or positive.
-func (this *Params) SubCost(v int) *Params {
+func (p *Params) SubCost(v int) *Params {
 	if v >= 0 {
-		this.subCost = v
+		p.subCost = v
 	}
-	return this
+	return p
 }
 
 // DelCost overrides the default value of 1 for the cost of deletion.
 // The new value must be zero or positive.
-func (this *Params) DelCost(v int) *Params {
+func (p *Params) DelCost(v int) *Params {
 	if v >= 0 {
-		this.delCost = v
+		p.delCost = v
 	}
-	return this
+	return p
 }
 
 // MaxCost overrides the default value of 0 (meaning unlimited) for the maximum cost.
 // The calculation of Distance() stops when the result is guaranteed to exceed
 // this maximum, returning a lower-bound rather than exact value.
 // The new value must be zero or positive.
-func (this *Params) MaxCost(v int) *Params {
+func (p *Params) MaxCost(v int) *Params {
 	if v >= 0 {
-		this.maxCost = v
+		p.maxCost = v
 	}
-	return this
+	return p
 }
 
 // MinScore overrides the default value of 0 for the minimum similarity score.
 // Scores below this threshold are returned as 0 by Similarity() and Match().
 // The new value must be zero or positive. Note that a minimum greater than 1
 // can never be satisfied, resulting in a score of 0 for any pair of strings.
-func (this *Params) MinScore(v float64) *Params {
+func (p *Params) MinScore(v float64) *Params {
 	if v >= 0 {
-		this.minScore = v
+		p.minScore = v
 	}
-	return this
+	return p
 }
 
 // BonusPrefix overrides the default value for the maximum length of
 // common prefix to be considered for bonus by Match().
 // The new value must be zero or positive.
-func (this *Params) BonusPrefix(v int) *Params {
+func (p *Params) BonusPrefix(v int) *Params {
 	if v >= 0 {
-		this.bonusPrefix = v
+		p.bonusPrefix = v
 	}
-	return this
+	return p
 }
 
 // BonusScale overrides the default value for the scaling factor used by Match()
@@ -127,26 +127,26 @@ func (this *Params) BonusPrefix(v int) *Params {
 // The new value must be zero or positive. To guarantee that the similarity score
 // remains in the interval 0..1, this scaling factor is not allowed to exceed
 // 1 / BonusPrefix.
-func (this *Params) BonusScale(v float64) *Params {
+func (p *Params) BonusScale(v float64) *Params {
 	if v >= 0 {
-		this.bonusScale = v
+		p.bonusScale = v
 	}
 
 	// the bonus cannot exceed (1-sim), or the score may become greater than 1.
-	if float64(this.bonusPrefix)*this.bonusScale > 1 {
-		this.bonusScale = 1 / float64(this.bonusPrefix)
+	if float64(p.bonusPrefix)*p.bonusScale > 1 {
+		p.bonusScale = 1 / float64(p.bonusPrefix)
 	}
 
-	return this
+	return p
 }
 
 // BonusThreshold overrides the default value for the minimum similarity score
 // for which Match() can assign a bonus.
 // The new value must be zero or positive. Note that a threshold greater than 1
 // effectively makes Match() become the equivalent of Similarity().
-func (this *Params) BonusThreshold(v float64) *Params {
+func (p *Params) BonusThreshold(v float64) *Params {
 	if v >= 0 {
-		this.bonusThreshold = v
+		p.bonusThreshold = v
 	}
-	return this
+	return p
 }
