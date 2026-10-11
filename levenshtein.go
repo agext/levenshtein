@@ -252,6 +252,12 @@ func Match(str1, str2 string, p *Params) float64 {
 		maxDist = l1*delCost + l2*insCost
 	}
 
+	// every edit that can change the distance is free, so the distance is 0.
+	// dividing by maxDist would be 0/0.
+	if maxDist == 0 {
+		return 1
+	}
+
 	// a zero min is always satisfied, so no need to set a max cost.
 	if p.minScore > 0 {
 		// if p.minScore is lower than p.bonusThreshold, we can use a simplified formula

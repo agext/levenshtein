@@ -213,3 +213,21 @@ func Test_Metrics(t *testing.T) {
 		}
 	}
 }
+
+func TestZeroCostSimilarity(t *testing.T) {
+	free := NewParams().InsCost(0).DelCost(0).SubCost(0)
+	if got := Similarity("aa", "aa", free); got != 1 {
+		t.Errorf("Similarity identical: got %v, want 1", got)
+	}
+	if got := Match("aa", "aa", free); got != 1 {
+		t.Errorf("Match identical: got %v, want 1", got)
+	}
+
+	sub := NewParams().SubCost(0)
+	if got := Distance("ab", "cd", sub); got != 0 {
+		t.Errorf("Distance free substitution: got %d, want 0", got)
+	}
+	if got := Similarity("ab", "cd", sub); got != 1 {
+		t.Errorf("Similarity free substitution: got %v, want 1", got)
+	}
+}
